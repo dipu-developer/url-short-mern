@@ -1,7 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-import os from 'os'
-console.log(os.cpus().length)
+import cookieParser from "cookie-parser";
 import connectDB from "./db/connectDB.js";
 import routes from "./routes/web.js";
 dotenv.config();
@@ -10,16 +9,23 @@ const port = process.env.PORT || 8001;
 const DATABASE_URL = process.env.DATABASE_URL;
 
 //Database connection
-connectDB(DATABASE_URL)
+connectDB(DATABASE_URL);
 
-// Handle json 
-app.use(express.json())
+// Handle json
+app.use(express.json());
+
+// handle cookies
+app.use(cookieParser())
 
 // Handle post request
-app.use(express.urlencoded({extended:true}))
+app.use(express.urlencoded({ extended: true }));
 
 //Handle url
-app.use('/',routes)
+app.use("/", routes);
+
+app.all('*', (req, res) => { 
+  res.status(404).send('<h1>404! Page not found</h1>'); 
+});
 
 app.listen(port, () => {
   console.log(`Server start on ${port}`);
