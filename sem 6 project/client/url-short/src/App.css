@@ -1,0 +1,90 @@
+body {
+  background-color: #F5F6F7 !important;
+}
+
+nav {
+
+  background: url("../public/bgdesign.svg");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
+
+  backdrop-filter: blur(10px);
+}
+
+.svg {
+  width: fit-content;
+  margin: auto;
+}
+
+.login-form {
+  max-width: 300px;
+}
+
+.form-pera {
+  color: #3d3a3a;
+  font-size: 14px;
+}
+
+img {
+  width: 100%;
+}
+
+.bg-wave {
+  background: url("../public/bgdesign.svg");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
+}
+
+.maintag {
+  font-size: 2.5rem;
+}
+
+.logo {
+  width: 200px;
+}
+
+.navlogo {
+  width: 100px;
+}
+
+.myfont {
+  font-family: cursive;
+}
+
+.input-box {
+  max-width: 500px;
+}
+
+.input-box input {
+  border-radius: 0;
+
+}
+
+.input-box button {
+  border-radius: 0;
+}
+
+.d-fix-footer {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+}
+
+.table-btn {
+  text-align: center;
+  font-size: 25px;
+  width: 70px;
+}
+
+.field-icon {
+  float: right;
+  margin-right: 5px;
+  margin-top: -28px;
+  position: relative;
+  z-index: 2;
+  width: 20px;
+}

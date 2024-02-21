@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 import cookieParser from "cookie-parser";
 import connectDB from "./db/connectDB.js";
 import routes from "./routes/web.js";
@@ -11,11 +12,14 @@ const DATABASE_URL = process.env.DATABASE_URL;
 //Database connection
 connectDB(DATABASE_URL);
 
+//Handle Cors error in frontend
+app.use(cors());
+
 // Handle json
 app.use(express.json());
 
 // handle cookies
-app.use(cookieParser())
+app.use(cookieParser());
 
 // Handle post request
 app.use(express.urlencoded({ extended: true }));
@@ -23,8 +27,8 @@ app.use(express.urlencoded({ extended: true }));
 //Handle url
 app.use("/", routes);
 
-app.all('*', (req, res) => { 
-  res.status(404).send('<h1>404! Page not found</h1>'); 
+app.all("*", (req, res) => {
+  res.status(404).send("<h1>404! Page not found</h1>");
 });
 
 app.listen(port, () => {

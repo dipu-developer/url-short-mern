@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid";
-import { urlModel, userAuth } from "../module/urlModule.js";
+import { profileModule, urlModel, userAuth } from "../module/urlModule.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -90,10 +90,11 @@ class UrlControllers {
                 { name: verifyUser.name, id: verifyUser._id },
                 process.env.SECRET_KEY
               );
-              set.cookie("uid", token);
+              // set.cookie("uid", token);
+              // res.cookie('token', token, { maxAge: 900000, httpOnly: true });
               return res
                 .status(200)
-                .json({ message: "user sucessfully login" });
+                .json({ message: "user sucessfully login",token:token });
             }
           } else {
             return res.status(200).json({ message: "user not found" });
@@ -112,10 +113,10 @@ class UrlControllers {
               res.cookie("uid", token);
               return res
                 .status(200)
-                .json({ message: "user sucessfully login" });
+                .json({ message: "user sucessfully login",token:token   });
             }
           } else {
-            return res.status(200).json({ message: "user not found" });
+            return res.status(200).json({ message: "user not found"});
           }
         }
       } else {
@@ -140,13 +141,15 @@ class UrlControllers {
               .status(200)
               .json({ message: "update sucessfully", newurl: newurl });
           } else {
-            return res.status(500).json({ message: "Enter proper existing url" });
+            return res
+              .status(500)
+              .json({ message: "Enter proper existing url" });
           }
         } else {
           return res.status(200).json({ message: "Url Already exist" });
         }
       } else {
-        return res.status(200).json({ message: "All message is requirerd" });
+        return res.status(200).json({ message: "All field is requirerd" });
       }
     } catch (error) {
       return res.status(500).json({ error: "Internal Server error" });
@@ -163,8 +166,46 @@ class UrlControllers {
         } else {
           return res.status(500).json({ error: "Internal Server error" });
         }
-      }else {
+      } else {
         return res.status(401).json({ error: "Authentication error" });
+      }
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ error: "Server error" });
+    }
+  };
+  static setProfileData = async (req, res) => {
+    try {
+      const { fname, lname, city, state, zip, phone, ifsc, account } = req.body;
+      const id = await res.id;
+      if (
+        fname !== "" &&
+        lname !== "" &&
+        city !== "" &&
+        state !== "" &&
+        zip !== "" &&
+        phone !== "" &&
+        ifsc !== "" &&
+        account !== "" &&
+        id !== ""
+      ) {
+        const doc = await profileModule.create({
+          fname: fname,
+          lname: lname,
+          city: city,
+          state: state,
+          zip: zip,
+          phone: phone,
+          ifsc: ifsc,
+          account: account,
+          user: id
+        });
+        const result = doc.save();
+        if (result) {
+          return res.status(200).json({ message: "data add Sucessfully" });
+        }
+      } else {
+        return res.status(422).json({ error: "All field are required" });
       }
     } catch (error) {
       console.log(error);

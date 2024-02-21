@@ -9,6 +9,7 @@ routes.post("/", cheakAuth, UrlControllers.shortLinkGenerate);
 routes.get("/ans/:id", cheakAuth, UrlControllers.totalVisit);
 routes.post("/editurl", cheakAuth, UrlControllers.editUrl);
 routes.post("/getdetails", cheakAuth, UrlControllers.getDetails);
+routes.post("/profiledata", cheakAuth, UrlControllers.setProfileData);
 
 routes.get("/:shortId", redirectMiddleware, UrlControllers.redirectUrl);
 routes.post("/create", UrlControllers.createUser);

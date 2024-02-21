@@ -16,8 +16,6 @@ const authSchema = new mongoose.Schema({
   password: { type: String, required: true, unique: true },
 });
 
-const userAuth = mongoose.model("user", authSchema);
-
 const urlSchema = new mongoose.Schema(
   {
     shorturl: { type: String, required: true, unique: true },
@@ -31,6 +29,58 @@ const urlSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const urlModel = mongoose.model("urldetail", urlSchema);
+const profileSchema = new mongoose.Schema({
+  fname: {
+    type: String,
+    required: [true, "Email field can't be empty"],
+    maxlength: [50, "Email must be less than 50 characters"],
+    trim: true,
+  },
+  lname: {
+    type: String,
+    required: [true, "Email field can't be empty"],
+    maxlength: [50, "Email must be less than 50 characters"],
+    trim: true,
+  },
+  city: {
+    type: String,
+    required: [true, "Email field can't be empty"],
+    maxlength: [50, "Email must be less than 50 characters"],
+    trim: true,
+  },
+  state: {
+    type: String,
+    required: [true, "Email field can't be empty"],
+    maxlength: [10, "Email must be less than 50 characters"],
+    trim: true,
+  },
+  zip: {
+    type: Number,
+    required: [true, "Email field can't be empty"],
+    maxlength: [999999, "Email must be less than 999999 characters"],
+  },
+  phone: {
+    type: Number,
+    required: [true, "Email field can't be empty"],
+  },
+  account: {
+    type: Number,
+    required: [true, "Email field can't be empty"],
+  },
+  ifsc: {
+    type: String,
+    required: [true, "Email field can't be empty"],
+    maxlength: [50, "Email must be less than 50 characters"],
+    trim: true,
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
+  },
+});
 
-export { urlModel, userAuth };
+const userAuth = mongoose.model("user", authSchema);
+const urlModel = mongoose.model("urldetail", urlSchema);
+const profileModule = mongoose.model("profile", profileSchema);
+
+export { urlModel, userAuth, profileModule };
