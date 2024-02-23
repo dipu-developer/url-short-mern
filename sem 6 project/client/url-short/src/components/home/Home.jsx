@@ -2,6 +2,8 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+// import "./../../App.css"
+import "./index.css"
 
 const Home = () => {
   return (

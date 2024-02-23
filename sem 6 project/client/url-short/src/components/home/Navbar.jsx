@@ -1,6 +1,5 @@
 import React from "react";
-import { NavLink, useLocation } from "react-router-dom";
-
+import { Link, NavLink, useLocation } from "react-router-dom";
 const Navbar = () => {
   const location = useLocation();
   return (
@@ -8,9 +7,9 @@ const Navbar = () => {
       <nav className="navbar navbar-expand-lg pt-2  text-white fixed-top mb-5">
         <div className="container-fluid px-5 mybg">
           <div className="d-flex justify-content-center">
-            <NavLink className="" to="/">
+            <NavLink  to="/">
               <img
-                src="logopng.png"
+                src={process.env.PUBLIC_URL + '/logopng.png'} 
                 alt="logopng"
                 className="navlogo mx-3"
               />
@@ -30,9 +29,9 @@ const Navbar = () => {
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item px-md-5">
-                <NavLink className="nav-link text-white" to="/db">
+                <Link className="nav-link text-white" to="/db/dashboard">
                   Dashboard
-                </NavLink>
+                </Link>
               </li>
               <li className="nav-item px-md-5">
                 <a className="nav-link text-white" href="#">

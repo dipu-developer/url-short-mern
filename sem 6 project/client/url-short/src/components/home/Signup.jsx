@@ -2,10 +2,18 @@ import React from "react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import axios from "axios";
+// import axios from "../Services/axiosIntercept";
 
 const Signup = () => {
+  const navigate = useNavigate();
+
+  const [errors, setErrors] = useState({});
+  const [termsChecked, setTermsChecked] = useState(false);
   const [iconStatus, setIconStatus] = useState(1);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [serverResponse, setServerResponse] = useState(null);
 
   const handleClick = () => {
     const passwordInput = document.getElementById("password");
@@ -26,9 +34,6 @@ const Signup = () => {
     password: "",
   });
 
-  const [errors, setErrors] = useState({});
-  const [termsChecked, setTermsChecked] = useState(false);
-
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     const val = type === "checkbox" ? checked : value;
@@ -38,41 +43,91 @@ const Signup = () => {
     });
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   const validationErrors = validateForm(formData);
+  //   console.log(formData);
+  //   if (Object.keys(validationErrors).length === 0 && termsChecked) {
+  //     try {
+  //       const response = await axios.post("http://localhost:8000/create", formData);
+  //       console.log(response)
+  //       console.log( response.data )
+  //       if (response.status === 201) {
+  //         navigate("/login");
+  //       }
+  //       if (response.status === 403) {
+  //         // Handle 403 Forbidden status code
+  //         setErrorMessage('Access Forbidden. Please login again.');
+  //         console.log('Access Forbidden. Please login again.');
+
+  //       }
+  //     } catch (error) {
+  //       if (error.response) {
+  //         if (error.response.status === 403) {
+  //           let errors = {};
+  //           errors.mess = "User already exists";
+  //           console.log('Access Forbidden. Please login again.');
+  //         }
+  //         else if (error.response.status === 500) {
+  //           console.log('Internal Server Error. Please try again later.');
+  //         }
+  //       } else {
+  //         console.error('Error:', error);
+
+  //       }
+  //     }
+  //   } else {
+  //     const newErrors = { ...validationErrors };
+  //     if (!termsChecked) {
+  //       newErrors.terms = "Please accept the terms and conditions";
+  //     }
+  //     // Form validation failed, set errors
+  //     setErrors(newErrors);
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
+    // Prevent default form submission behavior
     e.preventDefault();
+
+    // Validate form data
     const validationErrors = validateForm(formData);
+
+    // Check if there are no validation errors and terms are checked
     if (Object.keys(validationErrors).length === 0 && termsChecked) {
       try {
-        const response = await fetch("http://localhost:8000/create", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        });
-        if (response.ok) {
-          console.log("Data sent successfully");
-          // Reset form data
-          setFormData({
-            name: "",
-            email: "",
-            password: "",
-          });
-          // Clear any existing errors
-          setErrors({});
-        } else {
-          throw new Error("Failed to send data");
+        // Send form data to server
+        const response = await axios.post(
+          "http://localhost:8000/create",
+          formData
+        );
+        if (response.status === 201) {
+          navigate("/login");
+        }
+        // Handle Forbidden access
+        if (response.status === 403) {
+          setErrorMessage("User already exists");
         }
       } catch (error) {
-        console.error("Error:", error.message);
-        // Handle error
+        // Handle server errors
+        if (error.response) {
+          if (error.response.status === 403) {
+            setErrorMessage("User already exists");
+          } else if (error.response.status === 500) {
+            setErrorMessage("Internal Server Error. Please try again later.");
+          }
+        } else {
+          // Log any other errors
+          console.error("Error:", error);
+        }
       }
     } else {
+      // If there are validation errors or terms are not checked, update errors state
       const newErrors = { ...validationErrors };
       if (!termsChecked) {
         newErrors.terms = "Please accept the terms and conditions";
       }
-      // Form validation failed, set errors
+      // Set errors state
       setErrors(newErrors);
     }
   };
@@ -123,6 +178,10 @@ const Signup = () => {
             <div className="login-form m-auto mt-5">
               <h2 className="text-center">Sign Up</h2>
 
+              {serverResponse && (
+                <div style={{ color: "red" }}>{serverResponse}</div>
+              )}
+
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <input
@@ -160,7 +219,7 @@ const Signup = () => {
                     value={formData.password}
                     onChange={handleChange}
                   />
-                  
+
                   <span>
                     <img
                       src={iconStatus === 1 ? "close.svg" : "open.svg"}
@@ -176,13 +235,15 @@ const Signup = () => {
                 </div>
                 <input
                   type="checkbox"
-                  name="terms"
+                  name="accept"
+                  id="accept"
+                  className="mx-2"
                   checked={termsChecked}
                   onChange={handleCheckboxChange}
                 />
                 <label htmlFor="accept">Accept all term and condions</label>
                 {errors.terms && (
-                  <span style={{ color: "red" }}>{errors.terms}</span>
+                  <div style={{ color: "red" }}>{errors.terms}</div>
                 )}
                 <button className="btn btn-primary w-100 mt-3" type="submit">
                   Login

@@ -15,6 +15,8 @@ connectDB(DATABASE_URL);
 //Handle Cors error in frontend
 app.use(cors());
 
+app.set('view engine', 'ejs');
+
 // Handle json
 app.use(express.json());
 

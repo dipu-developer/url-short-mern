@@ -3,11 +3,12 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { useState } from "react";
 import axios from "axios";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [iconStatus, setIconStatus] = useState(1);
-  const [cookie, setCookie] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const handleClick = () => {
     const passwordInput = document.getElementById("password");
@@ -45,17 +46,29 @@ const Login = () => {
           "http://localhost:8000/login",
           formData
         );
+
         localStorage.setItem("token", response.data.token);
-        setFormData({
-          name: "",
-          password: "",
-        });
+        localStorage.setItem("uname", response.data.uname);
+        if (response.status === 200) {
+          navigate("/db/dashboard");
+        }
+        if (response.status === 401 || response.status === 404) {
+          // Set password error message
+          setErrorMessage("Incorrect password or Username");
+        }
         // Clear any existing errors
         setErrors({});
-        
       } catch (error) {
-        console.error("Error:", error.message);
-        // Handle error
+        if (error.response) {
+          if (error.response.status === 401 || error.response.status === 404) {
+            // Set password error message
+            setErrorMessage("Incorrect password or Username");
+          } else if (error.response.status === 500) {
+            setErrorMessage("Internal Server Error. Please try again later.");
+          }
+        } else {
+          console.error("Error:", error);
+        }
       }
     } else {
       // Form validation failed, set errors
@@ -64,7 +77,6 @@ const Login = () => {
   };
 
   const validateForm = (data) => {
-    let errors = {};
     if (!data.name.trim()) {
       errors.name = "Username is required";
     }
@@ -85,13 +97,18 @@ const Login = () => {
             <p className="text-center fs-1 myfont">Welcome Back</p>
             <h2 className="text-center mt-3">Login</h2>
             <div className="login-form m-auto mt-5">
+              {errorMessage && (
+                <div style={{ color: "red" }} className="m-2">
+                  {errorMessage}
+                </div>
+              )}
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <input
                     id="name"
                     name="name"
                     className="form-control"
-                    placeholder="Email or Name"
+                    placeholder="Username"
                     value={formData.name}
                     onChange={handleChange}
                   />
@@ -109,7 +126,7 @@ const Login = () => {
                     value={formData.password}
                     onChange={handleChange}
                   />
-                  
+
                   <span>
                     <img
                       src={iconStatus === 1 ? "close.svg" : "open.svg"}
