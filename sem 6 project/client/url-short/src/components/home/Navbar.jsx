@@ -2,6 +2,7 @@ import React from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 const Navbar = () => {
   const location = useLocation();
+  const token = localStorage.getItem('token')
   return (
     <>
       <nav className="navbar navbar-expand-lg pt-2  text-white fixed-top mb-5">
@@ -42,20 +43,23 @@ const Navbar = () => {
             <ul className="navbar-nav ml-auto mb-2 mb-lg-0">
               
               
-        {location.pathname !== '/login' && (
+        {
+          !token ?
+        
+        location.pathname !== '/login' && (
           <li className="nav-item px-md-5">
           <NavLink className="nav-link text-white" to="/login">
             Login
           </NavLink>
         </li>
-        )}
-        {location.pathname !== '/signup' && (
+        ):''}
+        { !token ? location.pathname !== '/signup' && (
           <li className="nav-item px-md-5">
           <NavLink className="nav-link text-white" to="/signup">
           <button className="btn btn-primary">Sign up Free</button>
           </NavLink>
         </li>
-        )}
+        ):''}
             </ul>
           </div>
         </div>

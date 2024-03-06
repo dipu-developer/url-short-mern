@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid";
-import { profileModule, urlModel, userAuth } from "../module/urlModule.js";
+import { profileModule, urlModel, userAuth, userSupport } from "../module/urlModule.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -130,9 +130,11 @@ class UrlControllers {
               { name: verifyUser.name, id: verifyUser._id },
               process.env.SECRET_KEY
             );
-            return res
-              .status(200)
-              .json({ message: "User successfully logged in", token: token , uname: name});
+            return res.status(200).json({
+              message: "User successfully logged in",
+              token: token,
+              uname: name,
+            });
           }
           if (verifyUser === null) {
             // Incorrect password
@@ -140,6 +142,7 @@ class UrlControllers {
           }
         } else {
           // User not found
+          clg("user not found")
           return res.status(404).json({ message: "User not found" });
         }
       } else {
@@ -185,9 +188,9 @@ class UrlControllers {
     try {
       const id = await res.id;
       if (id) {
-        const result = await urlModel.find({ user: id });
+        const result = await profileModule.find({ user: id });
         if (result) {
-          return res.status(200).json({ message: "doing" });
+          return res.status(200).json({ data: result });
         } else {
           return res.status(500).json({ error: "Internal Server error" });
         }
@@ -227,7 +230,7 @@ class UrlControllers {
         });
         const result = doc.save();
         if (result) {
-          return res.status(200).json({ message: "data add Sucessfully" });
+          return res.status(200).json({ message: "Sucessfully" });
         }
       } else {
         return res.status(422).json({ error: "All field are required" });
@@ -265,6 +268,111 @@ class UrlControllers {
       }
     } catch (error) {
       console.log(error);
+      return res.status(500).json({ error: "Server error" });
+    }
+  };
+  static dashBoard = async (req, res) => {
+    try {
+      const id = await res.id;
+      if (id) {
+        // const userData = await urlModel.find({user: id}).populate('user').select('shorturl redirectUrl updatedAt');
+        const userData = await urlModel
+          .find({ user: id })
+          .select("redirectUrl visitorHistory")
+          .sort({ visitorHistory: -1 });
+        if (userData) {
+          return res.status(200).json({ data: userData });
+        }
+      }
+    } catch (error) {}
+  };
+  static setProfile = async (req, res) => {
+    try {
+      const { fname, lname, city, state, zip, phone, ifsc, account } = req.body;
+      const id = await res.id;
+      if (
+        fname !== "" &&
+        lname !== "" &&
+        city !== "" &&
+        state !== "" &&
+        zip !== "" &&
+        phone !== "" &&
+        ifsc !== "" &&
+        account !== "" &&
+        id !== ""
+      ) {
+        let data = await profileModule.findOne({ _id: id });
+        if (data) {
+          data.fname = fname;
+          data.lname = lname;
+          data.city = city;
+          data.state = state;
+          data.zip = zip;
+          data.phone = phone;
+          data.ifsc = ifsc;
+          data.account = account;
+
+          data = await data.save();
+          if (data) {
+            return res.status(200).json({ message: "Sucessfully" });
+          }
+        } else {
+          const doc = await profileModule.create({
+            fname: fname,
+            lname: lname,
+            city: city,
+            state: state,
+            zip: zip,
+            phone: phone,
+            ifsc: ifsc,
+            account: account,
+            user: id,
+          });
+          const result = doc.save();
+          if (result) {
+            return res.status(200).json({ message: "Sucessfully" });
+          }
+        }
+      } else {
+        return res.status(422).json({ error: "All field are required" });
+      }
+    } catch (error) {
+      return res.status(500).json({ error: "Server error" });
+    }
+  };
+  static getProfileData = async (req, res) => {
+    try {
+      const id = await res.id;
+      if (id) {
+        const doc = await profileModule
+          .find({ user: id })
+          .sort({ updatedAt: -1 });
+        if (doc) {
+          return res.status(200).json({ data: doc });
+        } else {
+          return res.status(404).json({ message: "Profile not found" });
+        }
+      } else {
+        return res.status(404).json({ message: "User not found" });
+      }
+    } catch (error) {
+      return res.status(500).json({ error: "Server error" });
+    }
+  };
+  static userSupport = async (req, res) => {
+    try {
+      const id = await res.id;
+      if (id) {
+        const doc = await userSupport.create({
+          message: message,
+          user: id,
+        });
+        const result = doc.save();
+        if (result) {
+          return res.status(200).json({ message: "report subbmitted" });
+        }
+      }
+    } catch (error) {
       return res.status(500).json({ error: "Server error" });
     }
   };

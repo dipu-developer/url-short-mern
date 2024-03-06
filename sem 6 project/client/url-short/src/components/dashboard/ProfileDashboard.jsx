@@ -1,17 +1,20 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Navslider from "./Navslider";
 import DashBoardFooter from "./DashBoardFooter";
+import axios from "axios";
 
 const ProfileDashboard = () => {
+  const token = localStorage.getItem("token");
+  const [showInformation, setshowInformation] = useState(false);
   const [formData, setFormData] = useState({
     fname: "",
     lname: "",
     city: "",
     state: "",
     zip: "",
-    phoneNumber: "",
+    phone: "",
     ifsc: "",
-    accountNumber: "",
+    account: "",
   });
   const [errors, setErrors] = useState({});
 
@@ -19,12 +22,31 @@ const ProfileDashboard = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      // Send data to server in JSON format
-      console.log("Form data:", JSON.stringify(formData));
+      const fetchData = async () => {
+        try {
+          const response = await axios.post(
+            "http://localhost:8000/profiledata",
+            formData,
+            {
+              headers: {
+                authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          if (response.status === 200) {
+            setshowInformation(true); // Show the modal
+            setTimeout(() => {
+              setshowInformation(false); // Hide the modal after 3 seconds
+            }, 3000);
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+      fetchData();
     }
   };
 
@@ -62,24 +84,24 @@ const ProfileDashboard = () => {
       errors.zip = "Zip must be an integer with a maximum length of 6";
     }
 
-    if (!formData.phoneNumber) {
+    if (!formData.phone) {
       formIsValid = false;
-      errors.phoneNumber = "Phone number is required";
-    } else if (!/^\d{10}$/i.test(formData.phoneNumber)) {
+      errors.phone = "Phone number is required";
+    } else if (!/^\d{10}$/i.test(formData.phone)) {
       formIsValid = false;
-      errors.phoneNumber = "Please enter a valid 10-digit phone number";
+      errors.phone = "Please enter a valid 10-digit phone number";
     }
     if (!formData.ifsc) {
       formIsValid = false;
       errors.ifsc = "ifsc number is required";
     }
 
-    if (!formData.accountNumber) {
+    if (!formData.account) {
       formIsValid = false;
-      errors.accountNumber = "Account number is required";
-    } else if (isNaN(formData.accountNumber)) {
+      errors.account = "Account number is required";
+    } else if (isNaN(formData.account)) {
       formIsValid = false;
-      errors.accountNumber = "Account number must be a number";
+      errors.account = "Account number must be a number";
     }
 
     setErrors(errors);
@@ -90,6 +112,9 @@ const ProfileDashboard = () => {
       <Navslider />
       <div className="container mt-5">
         <h2 className="text-center my-5">Profile</h2>
+        <div class="alert alert-primary" role="alert" style={{ display: showInformation ? "block" : "none" }}>
+          Data Add Sucessfully
+        </div>
         <h3 className="mt-3">Account Details &amp; Personal Information</h3>
         <form id="detailform" onSubmit={handleSubmit}>
           <div className="row">
@@ -201,8 +226,8 @@ const ProfileDashboard = () => {
                 className="form-control mt-3"
                 placeholder="Phone Number"
                 id="pnumber"
-                name="phoneNumber"
-                value={formData.phoneNumber}
+                name="phone"
+                value={formData.phone}
                 onChange={handleInputChange}
               />
               {errors.phoneNumber && <span>{errors.phoneNumber}</span>}
@@ -224,11 +249,11 @@ const ProfileDashboard = () => {
                 className="form-control mt-3"
                 placeholder="Account Number"
                 id="account"
-                name="accountNumber"
-                value={formData.accountNumber}
+                name="account"
+                value={formData.account}
                 onChange={handleInputChange}
               />
-              {errors.accountNumber && <span>{errors.accountNumber}</span>}
+              {errors.account && <span>{errors.account}</span>}
             </div>
           </div>
           <button className="btn btn-primary mt-3" id="submitbtn" type="submit">

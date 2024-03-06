@@ -5,6 +5,14 @@ import Navslider from "./Navslider";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+// add after get time
+// const manipulateText = () => {
+//   if (text.startsWith('http://')) {
+//     setText(text.substring(7)); // Remove 'http://'
+//   }
+//   // You can add more conditions here if needed
+// };
+
 const LinkDashboard = () => {
   const [url, setUrl] = useState("");
   const [error, setError] = useState("");
@@ -24,6 +32,7 @@ const LinkDashboard = () => {
         },
       });
       setData(response.data.data);
+      setUrl("");
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -54,20 +63,23 @@ const LinkDashboard = () => {
     }
   };
 
-  const handleDeleteRow = async ( id) => {
+  const handleDeleteRow = async (id) => {
     try {
-      const response=await axios.delete(`http://localhost:8000/deleteurl/${id}`, {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      });
-      console.log(response)
+      const response = await axios.delete(
+        `http://localhost:8000/deleteurl/${id}`,
+        {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response);
       // After deleting, fetch data again to update the table
       if (response.status === 200) {
         setShowDelete(true); // Show the modal
-    setTimeout(() => {
-      setShowDelete(false); // Hide the modal after 3 seconds
-    }, 3000);
+        setTimeout(() => {
+          setShowDelete(false); // Hide the modal after 3 seconds
+        }, 3000);
         fetchData();
       }
     } catch (error) {
@@ -98,8 +110,7 @@ const LinkDashboard = () => {
       <div>
         <h2 className="text-center my-5">Link</h2>
         <div className="container">
-
-        <div
+          <div
             className="modal"
             style={{ display: ShowDelete ? "block" : "none" }}
           >
@@ -119,7 +130,6 @@ const LinkDashboard = () => {
               </div>
             </div>
           </div>
-
 
           <div
             className="modal"
@@ -207,21 +217,6 @@ const LinkDashboard = () => {
                   </td>
                 </tr>
               ))}
-
-              <tr>
-                <td>12-01-2012</td>
-                <td>www.google.com</td>
-                <td>http://shortly.com/KhmnF</td>
-                <td className="table-btn">
-                  <i className="bx bx-copy"></i>
-                </td>
-                <td className="table-btn text-success ">
-                  <i className="bx bx-edit-alt"></i>
-                </td>
-                <td className="table-btn text-danger ">
-                  <i className="bx bx-checkbox-minus"></i>
-                </td>
-              </tr>
             </tbody>
           </table>
         </div>

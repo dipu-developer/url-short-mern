@@ -7,10 +7,13 @@ import cheakAuth from "../middleware/verifyuser.js";
 routes.post("/", cheakAuth, UrlControllers.shortLinkGenerate);
 routes.get("/ans/:id", cheakAuth, UrlControllers.totalVisit);
 routes.post("/editurl", cheakAuth, UrlControllers.editUrl);
-routes.post("/getdetails", cheakAuth, UrlControllers.getDetails);
-routes.post("/profiledata", cheakAuth, UrlControllers.setProfileData);
+routes.get("/getdetails", cheakAuth, UrlControllers.getDetails);
+routes.post("/profiledata", cheakAuth, UrlControllers.setProfile);
 routes.get("/user/urldata",cheakAuth,UrlControllers.getAllUrlData)
 routes.delete("/deleteurl/:id",cheakAuth,UrlControllers.deleteUrl)
+routes.get("/dashboard",cheakAuth,UrlControllers.dashBoard)
+routes.get("/profile",cheakAuth,UrlControllers.getProfileData)
+routes.post("/support",cheakAuth,UrlControllers.userSupport)
 
 routes.get("/:shortId", UrlControllers.redirectUrl);
 routes.post("/create", UrlControllers.createUser);

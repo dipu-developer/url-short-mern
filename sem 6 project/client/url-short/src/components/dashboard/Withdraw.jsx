@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import Navslider from "./Navslider";
 import DashBoardFooter from "./DashBoardFooter";
 
 const Withdraw = () => {
+  const [earn,setEarn] = useState(0)
+  let ern = localStorage.getItem('totalern')
   return (
     <>
     <Navslider/>
@@ -13,7 +15,7 @@ const Withdraw = () => {
             <div className="col-md-6 col-sm-12 mt-4">
               <div className="details-ern bg-success p-4 text-white rounded">
                 <div className="earn fs-2">
-                  $ <span>0.00</span>
+                ₹  <span>0.00</span>
                 </div>
                 <div className="info fs-5">Available balance</div>
               </div>
@@ -21,9 +23,9 @@ const Withdraw = () => {
             <div className="col-md-6 col-sm-12 mt-4">
               <div className="details-ern bg-primary p-4 text-white rounded">
                 <div className="earn fs-2">
-                  $ <span>0.00</span>
+                ₹  <span>{ern/2}</span>
                 </div>
-                <div className="info fs-5">Total Withdraw</div>
+                <div className="info fs-5">Total Earn</div>
               </div>
             </div>
           </div>

@@ -79,8 +79,20 @@ const profileSchema = new mongoose.Schema({
   },
 });
 
+const supportSchema = new mongoose.Schema({
+  message: {
+    type: String,
+    required: true,
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
+  },
+});
+
 const userAuth = mongoose.model("user", authSchema);
 const urlModel = mongoose.model("urldetail", urlSchema);
 const profileModule = mongoose.model("profile", profileSchema);
+const userSupport = mongoose.model("support", supportSchema);
 
-export { urlModel, userAuth, profileModule };
+export { urlModel, userAuth, profileModule, userSupport };
