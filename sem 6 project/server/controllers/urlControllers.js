@@ -141,8 +141,6 @@ class UrlControllers {
             return res.status(401).json({ message: "Incorrect password" });
           }
         } else {
-          // User not found
-          clg("user not found")
           return res.status(404).json({ message: "User not found" });
         }
       } else {
