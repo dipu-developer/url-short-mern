@@ -62,7 +62,7 @@ const Support = () => {
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
-                <div className="modal-body">Url Delete successfully!</div>
+                <div className="modal-body">Message Send Sucessfully</div>
               </div>
             </div>
           </div>

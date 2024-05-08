@@ -110,14 +110,13 @@ import axios from "axios";
 //           </p>
 //         </div>
 //         </div>
-        
+
 //       </div>
 
 //       <DashBoardFooter />
 //     </>
 //   );
 // };
-
 
 const Dbhome = () => {
   const [totalVisitorHistory, setTotalVisitorHistory] = useState(0);
@@ -138,6 +137,21 @@ const Dbhome = () => {
       } catch (error) {
         console.error("Error fetching data:", error);
       }
+
+      try {
+        console.log("this function is called")
+        const response = await axios.get("http://localhost:8000/getdetails", {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        });
+        console.log(response); // Unused variable, can be removed
+        console.log(response.data); // Unused variable, can be removed
+        console.log(response.data.message); // Unused variable, can be removed
+        setPersonal(response.data.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     };
 
     fetchData();
@@ -154,7 +168,7 @@ const Dbhome = () => {
       0
     );
     setTotalVisitorHistory(totalCount);
-    localStorage.setItem('totalern',totalVisitorHistory)
+    localStorage.setItem("totalern", totalVisitorHistory);
   }, [data]);
 
   return (
@@ -226,7 +240,5 @@ const Dbhome = () => {
     </>
   );
 };
-
-
 
 export default Dbhome;

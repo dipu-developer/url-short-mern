@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin -Dashboard</title>
+
+
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" />
+  <link rel="stylesheet" href="dashboard.css" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .heading {
+      font-size: 24px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body id="body-pd">
+  <header class="header" id="header">
+    <div class="header_toggle">
+      <i class="bx bx-menu" id="header-toggle"></i>
+    </div>
+  </header>
+  <div class="l-navbar" id="nav-bar">
+    <nav class="nav">
+      <div>
+        <a href="/admin-dashboard" class="nav_logo">
+          <i class="bx bx-home-alt nav_logo-icon"></i>
+          <span>
+            <img src="img/logopng.png" alt="logopng" class="navlogo w-25" />
+          </span>
+        </a>
+        <div class="nav_list">
+          <a href="/admin-dashboard" class="nav_link active">
+              <i class="bx bx-grid-alt nav_icon"></i>
+              <span class="nav_name">Dashboard</span>
+          </a>
+          <a href="/admin-withdraw" class="nav_link">
+              <i class='bx bx-wallet nav_icon'></i>
+              <span class="nav_name">Withdraw</span>
+          </a>
+          <a href="/admin-support" class="nav_link ">
+              <i class='bx bx-support nav_icon'></i>
+              <span class="nav_name">Support</span>
+          </a>
+      </div>
+      </div>
+      <a href="#" class="nav_link">
+        <i class="bx bx-log-out nav_icon"></i>
+        <span class="nav_name">SignOut</span>
+      </a>
+    </nav>
+  </div>
+  <!--Container Main start-->
+  <div class=" ">
+    <h2 class="text-center my-5">Admin -Dashboard</h2>
+    <h3 class="text-center my-5">Total User</h3>
+
+    <div class="container mt-5">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">UserName</th>
+            <th scope="col">Email ID</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <% let index=1; %>
+            <% users.forEach(user=> { %>
+              <tr>
+                <td>
+                  <%= index %>
+                </td>
+                <td>
+                  <%= user.name %>
+                </td>
+                <td>
+                  <%= user.email %>
+                </td>
+              </tr>
+              <% index++; %>
+                <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!--Container Main end-->
+</body>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
+
+<script src="js/bootstrap.bundle.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function (event) {
+    const showNavbar = (toggleId, navId, bodyId, headerId) => {
+      const toggle = document.getElementById(toggleId),
+        nav = document.getElementById(navId),
+        bodypd = document.getElementById(bodyId),
+        headerpd = document.getElementById(headerId);
+
+      // Validate that all variables exist
+      if (toggle && nav && bodypd && headerpd) {
+        toggle.addEventListener("click", () => {
+          // show navbar
+          nav.classList.toggle("show");
+          // change icon
+          toggle.classList.toggle("bx-x");
+          // add padding to body
+          bodypd.classList.toggle("body-pd");
+          // add padding to header
+          headerpd.classList.toggle("body-pd");
+        });
+      }
+    };
+
+    showNavbar("header-toggle", "nav-bar", "body-pd", "header");
+
+    /*===== LINK ACTIVE =====*/
+    const linkColor = document.querySelectorAll(".nav_link");
+
+    function colorLink() {
+      if (linkColor) {
+        linkColor.forEach((l) => l.classList.remove("active"));
+        this.classList.add("active");
+      }
+    }
+    linkColor.forEach((l) => l.addEventListener("click", colorLink));
+
+    // Your code to run since DOM is loaded and ready
+  });
+</script>
+
+</html>

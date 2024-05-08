@@ -1,5 +1,10 @@
 import { nanoid } from "nanoid";
-import { profileModule, urlModel, userAuth, userSupport } from "../module/urlModule.js";
+import {
+  profileModule,
+  urlModel,
+  userAuth,
+  userSupport,
+} from "../module/urlModule.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -185,13 +190,15 @@ class UrlControllers {
   static getDetails = async (req, res) => {
     try {
       const id = await res.id;
+      console.log(id)
       if (id) {
-        const result = await profileModule.find({ user: id });
-        if (result) {
-          return res.status(200).json({ data: result });
-        } else {
-          return res.status(500).json({ error: "Internal Server error" });
-        }
+        const result = await profileModule.findOne({ user: id });
+        console.log(result)
+      if (result) {
+        return res.status(200).json({ data: result });
+      } else {
+        return res.status(404).json({ error: "Profile not found" });
+      }
       } else {
         return res.status(401).json({ error: "Authentication error" });
       }
@@ -360,6 +367,7 @@ class UrlControllers {
   static userSupport = async (req, res) => {
     try {
       const id = await res.id;
+      const { message } = req.body;
       if (id) {
         const doc = await userSupport.create({
           message: message,
@@ -372,6 +380,27 @@ class UrlControllers {
       }
     } catch (error) {
       return res.status(500).json({ error: "Server error" });
+    }
+  };
+
+  // ========== admin pannel code =============
+  static adminDashboard = async (req, res) => {
+    try {
+      const data = await userAuth.find();
+      return res.render("dashboard", { users: data });
+    } catch (error) {
+      res.send("Try Again");
+    }
+  };
+  static adminSupport = async (req, res) => {
+    try {
+      const supportDetails = await userSupport
+        .find()
+        .populate("user", "name email"); // Fetch support details and populate the 'user' field with 'name' and 'email'
+      res.render("support", { supportDetails: supportDetails });
+    } catch (error) {
+      console.log(error);
+      return res.send("Try Again");
     }
   };
 }
