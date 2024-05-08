@@ -190,15 +190,15 @@ class UrlControllers {
   static getDetails = async (req, res) => {
     try {
       const id = await res.id;
-      console.log(id)
+
       if (id) {
         const result = await profileModule.findOne({ user: id });
-        console.log(result)
-      if (result) {
-        return res.status(200).json({ data: result });
-      } else {
-        return res.status(404).json({ error: "Profile not found" });
-      }
+        
+        if (result) {
+          return res.status(200).json({ data: result });
+        } else {
+          return res.status(404).json({ error: "Profile not found" });
+        }
       } else {
         return res.status(401).json({ error: "Authentication error" });
       }

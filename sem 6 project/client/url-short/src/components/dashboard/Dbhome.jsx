@@ -139,16 +139,13 @@ const Dbhome = () => {
       }
 
       try {
-        console.log("this function is called")
         const response = await axios.get("http://localhost:8000/getdetails", {
           headers: {
             authorization: `Bearer ${token}`,
           },
-        });
-        console.log(response); // Unused variable, can be removed
-        console.log(response.data); // Unused variable, can be removed
-        console.log(response.data.message); // Unused variable, can be removed
+        }); // Unused variable, can be removed
         setPersonal(response.data.data);
+        console.log(response.data)
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -218,19 +215,29 @@ const Dbhome = () => {
           <div className="container my">
             <h2>Information</h2>
             <p>
-              <span className="heading"> Name: </span>Deepak Sharma
+              <span className="heading"> Name: </span>
+              {personal.fname ? (
+                <span>{personal.fname.toUpperCase()}</span>
+              ) : (
+                <span>User</span>
+              )}{" "}
+              {personal.lname ? (
+                <span>{personal.lname.toUpperCase()}</span>
+              ) : (
+                <span>User</span>
+              )}{" "}
             </p>
             <p>
-              <span className="heading"> Address: </span>Valsad -396165 Gujrat
+              <span className="heading"> Address: </span>{personal.city ?( personal.city.toUpperCase()):""} - {personal.zip} 
             </p>
             <p>
-              <span className="heading"> Phone Number: </span>9173556102
+              <span className="heading"> Phone Number: </span>{personal.phone}
             </p>
             <p>
-              <span className="heading"> Account Number: </span>0989098908
+              <span className="heading"> Account Number: </span>{personal.account}
             </p>
             <p>
-              <span className="heading"> IFSC Code: </span>Airp098909
+              <span className="heading"> IFSC Code: </span>{personal.ifsc}
             </p>
           </div>
         </div>
